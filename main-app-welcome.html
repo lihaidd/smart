@@ -1,0 +1,733 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>欢迎使用智慧村居办公系统</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg-top: #f7fbff;
+        --bg-bottom: #e7f0fb;
+        --panel: rgba(255, 255, 255, 0.94);
+        --panel-border: rgba(34, 88, 143, 0.12);
+        --title: #15395c;
+        --copy: rgba(21, 57, 92, 0.78);
+        --accent: #1565c0;
+        --accent-soft: rgba(21, 101, 192, 0.14);
+        --warn: #b45309;
+        --warn-bg: rgba(245, 158, 11, 0.12);
+        --danger: #c2410c;
+        --danger-bg: rgba(251, 146, 60, 0.16);
+        --success: #15803d;
+        --success-bg: rgba(34, 197, 94, 0.14);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        min-height: 100%;
+      }
+
+      body {
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at top left, rgba(255, 255, 255, 0.92), transparent 34%),
+          radial-gradient(circle at bottom right, rgba(21, 101, 192, 0.12), transparent 28%),
+          linear-gradient(160deg, var(--bg-top), var(--bg-bottom));
+        color: var(--title);
+        font-family: "Microsoft YaHei UI", "PingFang SC", sans-serif;
+      }
+
+      body::before,
+      body::after {
+        content: "";
+        position: fixed;
+        border-radius: 999px;
+        pointer-events: none;
+        filter: blur(4px);
+      }
+
+      body::before {
+        top: -120px;
+        left: -80px;
+        width: 360px;
+        height: 360px;
+        background: rgba(21, 101, 192, 0.08);
+      }
+
+      body::after {
+        right: -100px;
+        bottom: -140px;
+        width: 420px;
+        height: 420px;
+        background: rgba(40, 140, 255, 0.08);
+      }
+
+      .shell {
+        width: min(92vw, 1080px);
+        display: grid;
+        grid-template-columns: minmax(280px, 340px) minmax(380px, 1fr);
+        gap: 28px;
+        align-items: center;
+        padding: 34px;
+        border: 1px solid var(--panel-border);
+        border-radius: 24px;
+        background: var(--panel);
+        box-shadow: 0 26px 80px rgba(23, 61, 102, 0.12);
+        backdrop-filter: blur(12px);
+      }
+
+      .brand {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 18px;
+        padding: 28px 22px;
+        border-radius: 22px;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(238, 246, 255, 0.92));
+      }
+
+      .brand img {
+        width: 96px;
+        height: 96px;
+        object-fit: contain;
+        filter: drop-shadow(0 10px 22px rgba(21, 101, 192, 0.18));
+      }
+
+      .brand-name {
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+      }
+
+      .brand-copy {
+        text-align: center;
+        font-size: 13px;
+        line-height: 1.8;
+        color: var(--copy);
+      }
+
+      .content {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        width: fit-content;
+        gap: 8px;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+      }
+
+      .eyebrow::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: currentColor;
+        animation: pulse 1.2s ease-in-out infinite;
+      }
+
+      .eyebrow.warn {
+        background: var(--warn-bg);
+        color: var(--warn);
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(28px, 4vw, 42px);
+        line-height: 1.18;
+      }
+
+      p {
+        margin: 0;
+        font-size: 15px;
+        line-height: 1.9;
+        color: var(--copy);
+      }
+
+      .progress {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-top: 4px;
+      }
+
+      .spinner {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 3px solid rgba(21, 101, 192, 0.16);
+        border-top-color: var(--accent);
+        animation: spin 0.9s linear infinite;
+        flex: 0 0 auto;
+      }
+
+      .progress-copy {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .progress-title {
+        font-size: 15px;
+        font-weight: 700;
+      }
+
+      .progress-subtitle {
+        font-size: 13px;
+        color: var(--copy);
+      }
+
+      .tips,
+      .detail-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 4px;
+      }
+
+      .tip-card,
+      .detail-card {
+        padding: 14px 16px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid rgba(21, 101, 192, 0.08);
+      }
+
+      .tip-title,
+      .detail-label {
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .tip-copy,
+      .detail-value {
+        margin-top: 6px;
+        font-size: 12px;
+        line-height: 1.7;
+        color: var(--copy);
+        word-break: break-all;
+      }
+
+      .alert {
+        display: none;
+        padding: 14px 16px;
+        border-radius: 16px;
+        line-height: 1.8;
+        font-size: 13px;
+      }
+
+      .alert.visible {
+        display: block;
+      }
+
+      .alert.warn {
+        background: var(--warn-bg);
+        color: #92400e;
+      }
+
+      .alert.error {
+        background: var(--danger-bg);
+        color: var(--danger);
+      }
+
+      .alert.success {
+        background: var(--success-bg);
+        color: var(--success);
+      }
+
+      .actions {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .primary-btn,
+      .ghost-btn {
+        min-width: 160px;
+        height: 44px;
+        padding: 0 20px;
+        border-radius: 12px;
+        border: none;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+      }
+
+      .primary-btn {
+        background: var(--accent);
+        color: #fff;
+        box-shadow: 0 12px 26px rgba(21, 101, 192, 0.22);
+      }
+
+      .ghost-btn {
+        background: rgba(21, 101, 192, 0.08);
+        color: var(--accent);
+      }
+
+      .primary-btn:hover,
+      .ghost-btn:hover {
+        transform: translateY(-1px);
+      }
+
+      .primary-btn:disabled,
+      .ghost-btn:disabled {
+        opacity: 0.65;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: rgba(15, 23, 42, 0.28);
+        backdrop-filter: blur(4px);
+        z-index: 30;
+      }
+
+      .modal-backdrop.visible {
+        display: flex;
+      }
+
+      .modal {
+        width: min(92vw, 580px);
+        padding: 22px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.98);
+        box-shadow: 0 24px 60px rgba(15, 23, 42, 0.22);
+      }
+
+      .modal h2 {
+        margin: 0;
+        font-size: 24px;
+        line-height: 1.3;
+      }
+
+      .modal-copy {
+        margin-top: 10px;
+        color: var(--copy);
+        line-height: 1.8;
+        font-size: 14px;
+      }
+
+      .modal textarea {
+        width: 100%;
+        min-height: 130px;
+        margin-top: 16px;
+        padding: 14px;
+        border-radius: 14px;
+        border: 1px solid rgba(21, 101, 192, 0.18);
+        font-size: 14px;
+        line-height: 1.7;
+        resize: vertical;
+        outline: none;
+      }
+
+      .modal textarea:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 4px rgba(21, 101, 192, 0.08);
+      }
+
+      .modal .inline-error {
+        min-height: 22px;
+        margin-top: 10px;
+        font-size: 13px;
+        color: var(--danger);
+      }
+
+      .modal-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 14px;
+      }
+
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+          opacity: 0.85;
+        }
+        50% {
+          transform: scale(1.3);
+          opacity: 1;
+        }
+      }
+
+      @media (max-width: 900px) {
+        .shell {
+          grid-template-columns: 1fr;
+          width: min(92vw, 620px);
+          padding: 22px;
+          gap: 18px;
+        }
+
+        .tips,
+        .detail-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell" aria-label="应用启动欢迎页">
+      <section class="brand">
+        <img src="./logo.png" alt="智慧村居办公系统标识" />
+        <div class="brand-name">智慧村居办公系统</div>
+        <div id="brandCopy" class="brand-copy">数据、报表、人员、事务协同正在就绪，马上进入首页。</div>
+      </section>
+
+      <section class="content">
+        <div id="eyebrow" class="eyebrow">SYSTEM STARTING</div>
+        <h1 id="pageTitle">欢迎使用智慧村居办公系统</h1>
+        <p id="pageIntro">系统正在准备本地服务和界面资源。窗口已经正常启动，加载完成后会自动进入首页。</p>
+
+        <div id="startupProgress" class="progress" aria-live="polite">
+          <div class="spinner" aria-hidden="true"></div>
+          <div class="progress-copy">
+            <div id="progressTitle" class="progress-title">正在打开欢迎首页</div>
+            <div id="progressSubtitle" class="progress-subtitle">请稍候，系统会自动继续，无需重复点击。</div>
+          </div>
+        </div>
+
+        <div id="statusAlert" class="alert"></div>
+
+        <div id="recoveryActions" class="actions hidden">
+          <button id="openRecoveryButton" class="primary-btn" type="button">恢复数据库访问</button>
+        </div>
+
+        <div id="recoveryDetails" class="detail-grid hidden">
+          <div class="detail-card">
+            <div class="detail-label">数据库路径</div>
+            <div id="dbPathValue" class="detail-value">-</div>
+          </div>
+          <div class="detail-card">
+            <div class="detail-label">Recovery Key 校验码</div>
+            <div id="checksumValue" class="detail-value">暂不可用</div>
+          </div>
+          <div class="detail-card">
+            <div class="detail-label">Recovery Key 尾号</div>
+            <div id="tailValue" class="detail-value">暂不可用</div>
+          </div>
+        </div>
+
+        <div id="startupTips" class="tips">
+          <div class="tip-card">
+            <div class="tip-title">本地运行</div>
+            <div class="tip-copy">界面与数据服务会在本机完成准备后再进入主页面。</div>
+          </div>
+          <div class="tip-card">
+            <div class="tip-title">自动切换</div>
+            <div class="tip-copy">欢迎页仅在启动阶段展示，首页准备好后会自动切换。</div>
+          </div>
+          <div class="tip-card">
+            <div class="tip-title">无需等待操作</div>
+            <div class="tip-copy">当前无需手动刷新或重复启动，保持窗口开启即可。</div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="recoveryModal" class="modal-backdrop" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="recoveryModalTitle">
+        <h2 id="recoveryModalTitle">请输入恢复密钥</h2>
+        <div class="modal-copy">系统检测到当前数据库无法解锁，请输入纸质保存的恢复密钥。</div>
+        <textarea id="recoveryKeyInput" placeholder="XXXX-XXXX-XXXX-..." spellcheck="false"></textarea>
+        <div id="inlineError" class="inline-error"></div>
+        <div class="modal-actions">
+          <button id="cancelRecoveryButton" class="ghost-btn" type="button">取消</button>
+          <button id="submitRecoveryButton" class="primary-btn" type="button">恢复数据库访问</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (() => {
+        const params = new URLSearchParams(window.location.search);
+        const recoveryMode = params.get("mode") === "database-recovery";
+        const startupErrorMode = params.get("mode") === "startup-error";
+        const initialError = String(params.get("error") || "").trim();
+        const fallbackDbPath = String(params.get("dbPath") || "").trim();
+        const recoveryApiBase = String(params.get("apiBase") || "").trim().replace(/\/$/, "");
+        const shellUrl = String(params.get("shellUrl") || "").trim();
+
+        const getInvoke = () => window.__TAURI__?.core?.invoke;
+        const invoke = (command, payload = {}) => {
+          const executor = getInvoke();
+          if (typeof executor !== "function") {
+            return Promise.reject(new Error("Tauri invoke API is unavailable."));
+          }
+          return executor(command, payload);
+        };
+
+        const fetchJson = async (path, options = {}) => {
+          if (!recoveryApiBase) {
+            throw new Error("恢复接口未就绪，请关闭并重新打开应用。");
+          }
+          const response = await fetch(`${recoveryApiBase}${path}`, {
+            ...options,
+            headers: {
+              "Content-Type": "application/json; charset=utf-8",
+              ...(options.headers || {})
+            }
+          });
+          const payload = await response.json().catch(() => ({}));
+          if (!response.ok || Number(payload?.code || 0) !== 20000) {
+            throw new Error(String(payload?.message || `请求失败: ${response.status}`));
+          }
+          return payload?.data;
+        };
+
+        const state = {
+          status: null,
+          recovering: false
+        };
+
+        const eyebrow = document.getElementById("eyebrow");
+        const brandCopy = document.getElementById("brandCopy");
+        const pageTitle = document.getElementById("pageTitle");
+        const pageIntro = document.getElementById("pageIntro");
+        const startupProgress = document.getElementById("startupProgress");
+        const progressTitle = document.getElementById("progressTitle");
+        const progressSubtitle = document.getElementById("progressSubtitle");
+        const statusAlert = document.getElementById("statusAlert");
+        const startupTips = document.getElementById("startupTips");
+        const recoveryActions = document.getElementById("recoveryActions");
+        const recoveryDetails = document.getElementById("recoveryDetails");
+        const dbPathValue = document.getElementById("dbPathValue");
+        const checksumValue = document.getElementById("checksumValue");
+        const tailValue = document.getElementById("tailValue");
+        const recoveryModal = document.getElementById("recoveryModal");
+        const recoveryKeyInput = document.getElementById("recoveryKeyInput");
+        const inlineError = document.getElementById("inlineError");
+        const openRecoveryButton = document.getElementById("openRecoveryButton");
+        const cancelRecoveryButton = document.getElementById("cancelRecoveryButton");
+        const submitRecoveryButton = document.getElementById("submitRecoveryButton");
+
+        const setAlert = (type, text) => {
+          if (!text) {
+            statusAlert.className = "alert";
+            statusAlert.textContent = "";
+            return;
+          }
+          statusAlert.className = `alert visible ${type}`;
+          statusAlert.textContent = text;
+        };
+
+        const logEvent = async (message) => {
+          try {
+            await invoke("app_log_client_event", { message: String(message || "") });
+          } catch (_error) {
+            // Ignore.
+          }
+        };
+
+        const normalizeRecoveryKey = (value) =>
+          String(value || "")
+            .trim()
+            .replace(/\s+/g, "")
+            .toUpperCase();
+
+        const compactRecoveryKey = (value) => normalizeRecoveryKey(value).replace(/-/g, "");
+
+        const openModal = () => {
+          recoveryModal.classList.add("visible");
+          recoveryModal.setAttribute("aria-hidden", "false");
+          inlineError.textContent = "";
+          recoveryKeyInput.focus();
+        };
+
+        const closeModal = () => {
+          if (state.recovering) return;
+          recoveryModal.classList.remove("visible");
+          recoveryModal.setAttribute("aria-hidden", "true");
+        };
+
+        const setRecoveryModeLayout = () => {
+          eyebrow.textContent = "DATABASE RECOVERY";
+          eyebrow.classList.add("warn");
+          pageTitle.textContent = "无法打开本机数据库";
+          pageIntro.textContent = "系统检测到当前数据库无法解锁，请输入纸质保存的恢复密钥。";
+          brandCopy.textContent = "数据库仍保留在本机。完成恢复后，系统会自动重新打开并继续进入主界面。";
+          startupProgress.classList.add("hidden");
+          startupTips.classList.add("hidden");
+          recoveryActions.classList.remove("hidden");
+          recoveryDetails.classList.remove("hidden");
+          setAlert(
+            "warn",
+            initialError || "当前数据库无法解锁，请输入恢复密钥后继续。"
+          );
+        };
+
+        const setStartupErrorLayout = () => {
+          eyebrow.textContent = "STARTUP CHECK FAILED";
+          eyebrow.classList.add("warn");
+          pageTitle.textContent = "本地服务未能进入首页";
+          pageIntro.textContent = "程序已经启动，但本机 HTTP 首页检测失败。系统已停止无限等待，请按提示排查后重新打开。";
+          brandCopy.textContent = "常见原因包括 Windows 防火墙拦截、端口被占用、WebView2 版本过旧，或安装资源不完整。";
+          startupProgress.classList.add("hidden");
+          setAlert(
+            "error",
+            initialError || "本地服务检测失败，请重启电脑后再打开；仍失败时检查 Windows 防火墙、端口占用、WebView2 Runtime 和安装资源完整性。"
+          );
+          const cards = startupTips.querySelectorAll(".tip-card");
+          if (cards[0]) {
+            cards[0].querySelector(".tip-title").textContent = "检查防火墙";
+            cards[0].querySelector(".tip-copy").textContent = "在 Windows Defender 防火墙中允许智慧村居办公系统访问本机网络。";
+          }
+          if (cards[1]) {
+            cards[1].querySelector(".tip-title").textContent = "检查端口";
+            cards[1].querySelector(".tip-copy").textContent = shellUrl
+              ? `本次检测地址：${shellUrl}`
+              : "如端口被占用，请关闭占用程序后重新打开。";
+          }
+          if (cards[2]) {
+            cards[2].querySelector(".tip-title").textContent = "检查运行环境";
+            cards[2].querySelector(".tip-copy").textContent = "确认 WebView2 Runtime 已安装或更新，并检查安装目录资源是否完整。";
+          }
+        };
+
+        const fillRecoveryDetails = (status) => {
+          const dbPath = fallbackDbPath || status?.databasePath || "-";
+          dbPathValue.textContent = dbPath;
+          checksumValue.textContent = status?.recoveryKeyChecksum || "暂不可用";
+          tailValue.textContent = status?.recoveryKeyTail || "暂不可用";
+        };
+
+        const loadRecoveryStatus = async () => {
+          try {
+            const status = recoveryApiBase
+              ? await fetchJson("/api/database-encryption/status")
+              : await invoke("database_encryption_status");
+            state.status = status || null;
+            fillRecoveryDetails(status || {});
+          } catch (_error) {
+            fillRecoveryDetails({});
+          }
+        };
+
+        const submitRecovery = async () => {
+          const recoveryKey = String(recoveryKeyInput.value || "").trim();
+          if (!recoveryKey) {
+            inlineError.textContent = "请输入恢复密钥";
+            await logEvent("recovery_key_restore rejected_empty");
+            return;
+          }
+
+          if (compactRecoveryKey(recoveryKey).length < 43) {
+            inlineError.textContent = "恢复密钥格式不完整";
+            return;
+          }
+
+          state.recovering = true;
+          inlineError.textContent = "";
+          submitRecoveryButton.disabled = true;
+          cancelRecoveryButton.disabled = true;
+          openRecoveryButton.disabled = true;
+          setAlert("warn", "正在验证恢复密钥并重建本机访问，请稍候...");
+
+          try {
+            if (recoveryApiBase) {
+              await fetchJson("/api/database-encryption/restore-key", {
+                method: "POST",
+                body: JSON.stringify({ recoveryKey })
+              });
+            } else {
+              await invoke("database_encryption_restore_key", {
+                input: { recoveryKey }
+              });
+            }
+            setAlert("success", "恢复成功，系统正在重新打开...");
+            await logEvent("recovery_key_restore welcome_page_success");
+            const restarted = recoveryApiBase
+              ? Boolean(
+                  (
+                    await fetchJson("/api/app/relaunch-after-recovery", {
+                      method: "POST"
+                    })
+                  )?.restarted
+                )
+              : await invoke("app_relaunch_after_recovery");
+            if (!restarted) {
+              setAlert("success", "恢复成功，请关闭并重新打开应用。");
+            }
+          } catch (error) {
+            const message = String(error?.message || error || "恢复密钥无效，无法解锁当前数据库");
+            inlineError.textContent = message;
+            setAlert("error", message);
+          } finally {
+            state.recovering = false;
+            submitRecoveryButton.disabled = false;
+            cancelRecoveryButton.disabled = false;
+            openRecoveryButton.disabled = false;
+          }
+        };
+
+        openRecoveryButton.addEventListener("click", openModal);
+        cancelRecoveryButton.addEventListener("click", closeModal);
+        submitRecoveryButton.addEventListener("click", submitRecovery);
+        recoveryKeyInput.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) {
+            event.preventDefault();
+            void submitRecovery();
+          }
+        });
+        recoveryModal.addEventListener("click", (event) => {
+          if (event.target === recoveryModal) {
+            closeModal();
+          }
+        });
+
+        if (recoveryMode) {
+          setRecoveryModeLayout();
+          void loadRecoveryStatus();
+        }
+
+        if (startupErrorMode) {
+          setStartupErrorLayout();
+          void logEvent(`startup_error_visible shell_url=${shellUrl || "-"} message=${initialError || "-"}`);
+        }
+
+        if (!recoveryMode && !startupErrorMode) {
+          setAlert("", "");
+        }
+      })();
+    </script>
+  </body>
+</html>
